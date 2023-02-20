@@ -1,22 +1,28 @@
-import { useContext ,useEffect} from 'react'
+import { useContext ,useEffect, useState} from 'react'
+import axios from 'axios'
 import {AuthContext} from './auth'
 import {useNavigate} from 'react-router-dom'
 
 function home (){
     const {current} = useContext(AuthContext);
     const navigate = useNavigate();
-    const userData = [
-        {name:'วาณี1',lastname:'ปุยเจริญ1',email:'wanee1@gmail'},
-        {name:'วาณี2',lastname:'ปุยเจริญ2',email:'wanee2@gmail'},
-        {name:'วาณี3',lastname:'ปุยเจริญ3',email:'wanee3@gmail'},
-        {name:'วาณี4',lastname:'ปุยเจริญ4',email:'wanee4@gmail'},
-        {name:'วาณี5',lastname:'ปุยเจริญ5',email:'wanee5@gmail'},
-    ]
+    const [userData , setUserData] = useState()
+
 
     useEffect(() => {
         if(!current){
             navigate('/login')
         }
+
+        axios.get('http://localhost:5174/api/list-user') // เชื่อมต่อกับ api ของฝั่ง backend
+        .then((res) => {
+            console.log(res.data.result)
+            setUserData(res.data.result)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+
     },[])
 
     return (
@@ -24,15 +30,15 @@ function home (){
             <div className="container-lg bg-white"  style={{marginTop : 90 ,padding:20 ,width: 700 , borderRadius: 20  }}>  
                 <div className='text-center'>รายชื่อผู้ใช้งานระบบ</div>
                 <div className='mt-5'>
-                    <table class="table table-bordered">
+                    <table className="table table-bordered">
                         <tr>
                             <th>name</th>
                             <th>lastName</th>
                             <th>email</th>
                         </tr>
                         {
-                            userData.map((item)=>(
-                                <tr>
+                           userData?.map((item,index)=>(
+                                <tr key={index}>
                                     <td>{item.name}</td>
                                     <td>{item.lastname}</td>
                                     <td>{item.email}</td>
