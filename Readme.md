@@ -12,7 +12,16 @@
 *4. cd project
 
 
-*5 ใช้คำสั่ง npm install
+*5 ใช้คำสั่ง
+
+```bash
+npm install 
+```
 
 
-*6.ใช้คำสั่ง npm run dev
+*6.ใช้คำสั่ง
+
+```bash
+npm run dev
+```
+
