@@ -1,22 +1,18 @@
-import { useContext ,useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import axios from 'axios'
-import {AuthContext} from './auth'
 import {useNavigate} from 'react-router-dom'
 
 function home (){
-    const {current} = useContext(AuthContext);
     const navigate = useNavigate();
     const [userData , setUserData] = useState()
 
-
     useEffect(() => {
-        if(!current){
+        if(!sessionStorage.getItem("login")){
             navigate('/login')
         }
 
         axios.get('http://localhost:5174/api/list-user') // เชื่อมต่อกับ api ของฝั่ง backend
         .then((res) => {
-            console.log(res.data.result)
             setUserData(res.data.result)
         })
         .catch((error) => {
@@ -32,15 +28,15 @@ function home (){
                 <div className='mt-5'>
                     <table className="table table-bordered">
                         <tr>
-                            <th>name</th>
-                            <th>lastName</th>
+                            <th>first_name</th>
+                            <th>last_name</th>
                             <th>email</th>
                         </tr>
                         {
                            userData?.map((item,index)=>(
                                 <tr key={index}>
-                                    <td>{item.name}</td>
-                                    <td>{item.lastname}</td>
+                                    <td>{item.first_name}</td>
+                                    <td>{item.last_name}</td>
                                     <td>{item.email}</td>
                                 </tr>
                             ))
@@ -48,6 +44,16 @@ function home (){
                     </table>
                 </div>
             </div>
+            <div className='mt-5 text-center'>
+                <button className='btn btn-primary' 
+                onClick={()=>{
+                    sessionStorage.clear()
+                    navigate('/login')
+                }}
+                >
+                    Sign Out
+                </button>
+            </div>        
         </div>
     )
 

@@ -1,6 +1,5 @@
-import {signInWithEmailAndPassword} from 'firebase/auth'
-import { useNavigate  } from "react-router-dom";
-import { auth } from "./config"
+import { useNavigate} from "react-router-dom";
+import axios from 'axios'
 import Swal from 'sweetalert2'
 
 function login () {
@@ -9,19 +8,18 @@ function login () {
     function onSubmit(e) {
         e.preventDefault()
         const {email , password} = e.target.elements
-
-        signInWithEmailAndPassword(auth , email.value, password.value)
-        .then(()=>{
-            Swal.fire('เข้าสู่ระบบสำเร็จ','','success').then(() =>{
-                navigate("/home")
-            })
+ 
+        axios.post('http://localhost:5174/api/login',{ email:email.value, password: password.value }) // เชื่อมต่อกับ api ของฝั่ง backend
+        .then((res) => {
+          Swal.fire('เข้าสู่ระบบสำเร็จ','','success').then(()=>{
+            sessionStorage.setItem("login",true);
+            navigate('/home')
+          })
         })
-        .catch(() =>{
-            Swal.fire('เข้าสู่ระบบไม่สำเร็จ','','error')
+        .catch((error) => {
+           Swal.fire('ไม่สามารถเข้าสู่ระบบได้','email หรือ password ผิด','error')
         })
-
     }
-
 
     return (
         <div className="Login">

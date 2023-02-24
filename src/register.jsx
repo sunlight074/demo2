@@ -1,7 +1,6 @@
 import Swal from 'sweetalert2'
 import { useNavigate  } from "react-router-dom";
-import { auth } from "./config"
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import axios from 'axios'
 
 function register() {
   const navigate = useNavigate();
@@ -9,8 +8,7 @@ function register() {
   function onSubmit(e){
     e.preventDefault()
 
-    const {email ,password ,confirmation} = e.target.elements
-    console.log(email.value , password.value)
+    const {email ,password ,confirmation ,first_name , last_name } = e.target.elements
 
     if(password.value !== confirmation.value){
       Swal.fire('รหัสผ่านไม่ตรงกัน' ,'' ,'error')
@@ -23,16 +21,18 @@ function register() {
         confirmButtonText:'ยืนยัน',
         cancelButtonText:'ยกเลิก',
       }).then((result)=>{
-          if(result.isConfirmed){       
-            createUserWithEmailAndPassword(auth , email.value , password.value) // หน่วง 500 วิ
-            .then(()=>{
+          if(result.isConfirmed) {       
+            axios.post('http://localhost:5174/api/register',
+            { email:email.value, password: password.value , first_name:first_name.value , last_name:last_name.value }) // เชื่อมต่อกับ api ของฝั่ง backend
+            .then((res) => {
               Swal.fire('ลงทะเบียนสำเร็จ','','success').then(()=>{
                 navigate('/login')
               })
             })
-            .catch(()=>{
-              Swal.fire('ลงทะเบียนไม่สำเร็จ','มี email ซ้ำ หรือ รหัสน้อยกว่า 6 ตัว','error')
+            .catch((error) => {
+               Swal.fire('ลงทะเบียนไม่สำเร็จ','มี email ซ้ำ','error')
             })
+
           }
       }) 
     }
@@ -47,6 +47,16 @@ function register() {
 
         <form className="needs-validation" novalidate onSubmit={onSubmit}>
           
+          <div className="mb-3">
+              <label>Name</label>
+              <input className="form-control" type="text" name="first_name" required/>
+          </div>
+
+          <div className="mb-3">
+              <label>Lastname</label>
+              <input className="form-control" type="text" name="last_name" required/>
+          </div>
+
           <div className="mb-3">
               <label>E-mail</label>
               <input className="form-control" type="email" name="email" required/>
