@@ -3,7 +3,7 @@
 *1.download  node js  => https://nodejs.org/en/
 
 
-**2.แตกไฟล์  zip 
+**2.แตกไฟล์  zip  หรือใช้คำสั่ง git clone 
 
 
 **3. เปิดผ่าน vscode
